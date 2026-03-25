@@ -9,3 +9,13 @@ services:
     command: ./gradlew bootRun
     ports:
       - "8080:8080"
+  tournaments:
+    image: gradle:8.7-jdk21
+    working_dir: /app
+    volumes:
+      - ../services/tournaments:/app
+    command: ./gradlew bootRun
+    env_file:
+      - .env.tournaments
+    ports:
+      - "8081:8080"
