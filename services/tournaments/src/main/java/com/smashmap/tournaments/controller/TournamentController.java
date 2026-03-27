@@ -1,4 +1,15 @@
-package com.smashmap.tournaments;
+package com.smashmap.tournaments.controller;
+
+import com.smashmap.tournaments.api.StartGG;
+import com.smashmap.tournaments.entity.TournamentEntity;
+import com.smashmap.tournaments.repository.TournamentRepository;
+import com.smashmap.tournaments.wrapper.GraphQLResponse;
+import com.smashmap.tournaments.wrapper.JsonTournament;
+
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
 
 import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,8 +26,11 @@ public class TournamentController {
 
   private final StartGG startgg;
 
-  public TournamentController(StartGG startgg) {
+  private final TournamentRepository tournamentRepository;
+
+  public TournamentController(StartGG startgg, TournamentRepository tournamentRepository) {
     this.startgg = startgg;
+    this.tournamentRepository = tournamentRepository;
   }
 
   @GetMapping
@@ -60,7 +74,20 @@ public class TournamentController {
       }
     }
     """;
-    System.out.println(startgg.sendRequest(query, HttpMethod.POST));
+
+    GraphQLResponse response = startgg.sendRequest(query, HttpMethod.POST);
+
+    List<JsonTournament> tournaments = response.getData().getTournaments().getNodes();
+
+
+    for (JsonTournament element : tournaments) {
+        LocalDateTime startTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(element.getCreatedAt()), ZoneId.systemDefault());
+
+        LocalDateTime endTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(element.getEndAt()), ZoneId.systemDefault());
+        TournamentEntity newEntity = TournamentEntity.builder().name(element.getName()).id(element.getId()).createdAt(startTime).endAt(endTime).build();
+        
+        tournamentRepository.save(newEntity);
+    }
   }
 
 }

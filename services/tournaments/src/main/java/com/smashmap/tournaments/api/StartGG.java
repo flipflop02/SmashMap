@@ -1,4 +1,8 @@
-package com.smashmap.tournaments;
+package com.smashmap.tournaments.api;
+
+import com.smashmap.tournaments.config.StartGGConfig;
+
+import com.smashmap.tournaments.wrapper.GraphQLResponse;
 
 import java.util.Map;
 
@@ -24,9 +28,9 @@ public class StartGG {
         headers.set("Authorization", "Bearer " + config.getToken());
     }
 
-    public String sendRequest(String query, HttpMethod method) {
+    public GraphQLResponse sendRequest(String query, HttpMethod method) {
         RestTemplate restTemplate = new RestTemplate();
-        String bodyResponse;
+        GraphQLResponse bodyResponse = null;
 
         Map<String, Object> body = Map.of(
                 "query", query
@@ -34,12 +38,11 @@ public class StartGG {
         
         try {
             HttpEntity<Map<String, Object>> entity = new HttpEntity<Map<String, Object>>(body, headers);
-            ResponseEntity<String> response = restTemplate.exchange(config.getUrl(), method, entity, String.class);
+            ResponseEntity<GraphQLResponse> response = restTemplate.exchange(config.getUrl(), method, entity, GraphQLResponse.class);
 
             bodyResponse = response.getBody();
         }
         catch (Exception e) {
-            bodyResponse = "err";
             System.out.println("** Exception: "+ e.getMessage());
         }
 

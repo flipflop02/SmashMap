@@ -1,4 +1,4 @@
-package com.smashmap.tournaments;
+package com.smashmap.tournaments.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;

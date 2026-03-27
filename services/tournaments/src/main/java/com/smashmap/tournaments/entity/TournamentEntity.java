@@ -1,15 +1,15 @@
-package com.smashmap.tournaments;
+package com.smashmap.tournaments.entity;
 
 import java.time.LocalDateTime;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -18,10 +18,7 @@ import lombok.NoArgsConstructor;
 public class TournamentEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-
-    long sggId;
 
     String name;
 
