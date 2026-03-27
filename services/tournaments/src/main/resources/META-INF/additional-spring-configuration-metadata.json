@@ -1,0 +1,10 @@
+{"properties": [{
+  "name": "startgg.api.token",
+  "type": "java.lang.String",
+  "description": "API Token"
+},
+{
+  "name": "startgg.api.url",
+  "type": "java.lang.String",
+  "description": "Url of API"
+}]}
