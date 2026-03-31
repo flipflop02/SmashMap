@@ -24,6 +24,8 @@ public class TournamentEntity {
 
     long countryId;
 
+    LocalDateTime startAt;
+
     LocalDateTime endAt;
 
     LocalDateTime createdAt;

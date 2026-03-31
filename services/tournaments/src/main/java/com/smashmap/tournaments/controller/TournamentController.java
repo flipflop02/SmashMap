@@ -34,13 +34,13 @@ public class TournamentController {
   }
 
   @GetMapping
-  public String get() {
-    return "Hello world";
+  public List<TournamentEntity> get() {
+    return tournamentRepository.findAll();
   }
 
   @GetMapping("{id}")
-  public String getById(@PathVariable Long id) {
-    return "Hello world" + id;
+  public TournamentEntity getById(@PathVariable Long id) {
+    return tournamentRepository.findById(id).get();
   }
 
   @PostMapping
@@ -48,15 +48,17 @@ public class TournamentController {
     return "Hello world";
   }
 
-  @Scheduled(cron = "0 * * * * *")
+  @Scheduled(cron = "* */30 * * * *")
   @SchedulerLock(name = "tournamentsLock", lockAtMostFor = "10m")
   public void syncTournaments() {
+
     String query = """
     query TournamentsByCountry {
     tournaments(query: {
         perPage: 512
+        sortBy: "startAt asc"
         filter: {
-          afterDate: 1689098512
+          upcoming: true
           countryCode: "FR"
                 videogameIds: [
                     1386
@@ -68,6 +70,7 @@ public class TournamentController {
           name
           city
           countryCode
+          startAt
           createdAt
           endAt
         }
@@ -82,9 +85,10 @@ public class TournamentController {
 
     for (JsonTournament element : tournaments) {
         LocalDateTime startTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(element.getCreatedAt()), ZoneId.systemDefault());
+        LocalDateTime startAt = LocalDateTime.ofInstant(Instant.ofEpochSecond(element.getStartAt()), ZoneId.systemDefault());
 
         LocalDateTime endTime = LocalDateTime.ofInstant(Instant.ofEpochSecond(element.getEndAt()), ZoneId.systemDefault());
-        TournamentEntity newEntity = TournamentEntity.builder().name(element.getName()).id(element.getId()).createdAt(startTime).endAt(endTime).build();
+        TournamentEntity newEntity = TournamentEntity.builder().name(element.getName()).id(element.getId()).startAt(startAt).createdAt(startTime).endAt(endTime).build();
         
         tournamentRepository.save(newEntity);
     }

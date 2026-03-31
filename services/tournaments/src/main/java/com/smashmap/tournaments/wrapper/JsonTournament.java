@@ -6,6 +6,7 @@ public class JsonTournament {
     private String name;
     private String city;
     private String countryCode;
+    private Long startAt;
     private Long createdAt;
     private Long endAt;
 
@@ -33,6 +34,10 @@ public class JsonTournament {
         return endAt;
     }
 
+    public Long getStartAt() {
+        return startAt;
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -55,5 +60,9 @@ public class JsonTournament {
 
     public void setEndAt(Long endAt) {
         this.endAt = endAt;
+    }
+
+    public void setStartAt(Long startAt) {
+        this.startAt = startAt;
     }
 }
